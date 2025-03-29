@@ -5,10 +5,10 @@ services:
   postgres:
     image: postgres:16
     container_name: postgres_16
-    command:
-      - "postgres"
-      - "-c"
-      - "config_file=/var/lib/postgresql/data/postgresql.conf"
+#    command:
+#      - "postgres"
+#      - "-c"
+#      - "config_file=/var/lib/postgresql/data/postgresql.conf"
     networks:
       - docker-network
     environment:
@@ -20,7 +20,7 @@ services:
       - "5432:5432"
     volumes:
       - ./postgres_db/:/var/lib/postgresql/data
-      - ./postgresql.conf:/var/lib/postgresql/data/postgresql.conf
+#      - ./postgresql.conf:/var/lib/postgresql/data/postgresql.conf
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}" ]
       interval: 5s

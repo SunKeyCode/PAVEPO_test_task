@@ -6,7 +6,7 @@ from db.models import Base
 from db.models.base import int_pk
 
 
-class File(Base):
+class FileModel(Base):
     __tablename__ = "file_storage"
 
     id: Mapped[int_pk]

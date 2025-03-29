@@ -1,18 +1,45 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, UploadFile, Depends
+from starlette.responses import FileResponse
+
+from api.dependencies import FileRepo
+from constants import FILES_DIR
+from schemas.files import CreateFileSchema
+from utils import save_file_to_filesystem
 
 router = APIRouter(prefix="/files", tags=["Работа с файлами"])
 
 
-@router.get("/")
-async def download_file():
-    pass
+@router.get("/download/{file_id}")
+async def download_file(
+    file_id: int,
+    repo: FileRepo,
+):
+    file_info = await repo.get(file_id=file_id)
+    return FileResponse(
+        path=FILES_DIR / file_info.system_filename,
+        filename=file_info.user_filename,
+        media_type="application/octet-stream",
+    )
 
 
-@router.post("/")
-async def upload_file():
-    pass
+@router.post("/upload")
+async def upload_file(
+    file: UploadFile,
+    repo: FileRepo,
+    file_info: CreateFileSchema = Depends(),
+) -> int:
+    await save_file_to_filesystem(
+        file_obj=await file.read(), system_filename=file_info.system_filename
+    )
+    new_file = await repo.create(file_info=file_info, user_id=1)
+
+    return new_file.id
 
 
 @router.get("/list/{user_id}")
-async def get_files_by_user_id(user_id: int):
-    pass
+async def get_files_by_user_id(
+    user_id: int,
+    repo: FileRepo,
+):
+    files = await repo.get_by_user(user_id=user_id)
+    return files

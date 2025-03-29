@@ -1,7 +1,14 @@
-from sqlalchemy import Identity, Boolean, Integer, String
-from sqlalchemy.orm import mapped_column, Mapped
+from sqlalchemy import Identity, Boolean, Integer, String, ForeignKey
+from sqlalchemy.orm import mapped_column, Mapped, relationship
 
 from db.models.base import Base
+
+
+class YandexAccount(Base):
+    __tablename__ = "yandex_account_table"
+    id: Mapped[int] = mapped_column(Integer, Identity(always=False), primary_key=True)
+    login: Mapped[str] = mapped_column(String, nullable=False, unique=True)
+    default_email: Mapped[str] = mapped_column(String)
 
 
 class User(Base):
@@ -12,3 +19,10 @@ class User(Base):
     login: Mapped[str] = mapped_column(String, nullable=False, unique=True)
     email: Mapped[str] = mapped_column(String)
     is_superuser: Mapped[bool] = mapped_column(Boolean, default=False)
+    yandex_id: Mapped[int] = mapped_column(
+        ForeignKey("yandex_account_table.id"),
+        nullable=True,
+        name="fk_user_yandex_account_table_id",
+    )
+
+    yandex_account = relationship(YandexAccount)

@@ -1,3 +1,5 @@
+from contextlib import asynccontextmanager
+
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncEngine
 from sqlalchemy.ext.asyncio import async_sessionmaker
 
@@ -22,13 +24,13 @@ def async_session_maker() -> async_sessionmaker:
     )
 
 
+@asynccontextmanager
 async def get_session():
-    session_maker = async_session_maker()
-    async with session_maker() as session:
-        try:
-            yield session
-        except Exception as exc:
-            await session.rollback()
-            raise exc
-        finally:
-            await session.close()
+    session = async_session_maker()()
+    try:
+        yield session
+    except Exception as exc:
+        await session.rollback()
+        raise exc
+    finally:
+        await session.close()

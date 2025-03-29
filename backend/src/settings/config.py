@@ -20,6 +20,10 @@ class AppSettings(PydanticBaseSettings):
     DB_HOST: str
     DB_PORT: int
 
+    SECRET_KEY: str
+    JWT_ALGORYTHM: str
+    ACCESS_TOKEN_EXPIRE_MINUTES: int
+
     @staticmethod
     def build_postgres_url(pg_driver: Literal["psycopg2", "asyncpg"], **values):
         url = PostgresDsn.build(

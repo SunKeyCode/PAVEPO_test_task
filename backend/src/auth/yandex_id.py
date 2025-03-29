@@ -19,10 +19,4 @@ async def request_user_data() -> YandexIdInputSchema:
         response = await client.get(url, params=params)
 
         resp_as_dict = response.json()
-        res = YandexIdInputSchema(**resp_as_dict)
-
-        return res
-
-if __name__ == '__main__':
-    res = asyncio.run(request_user_data())
-    print(res)
+        return YandexIdInputSchema(**resp_as_dict)

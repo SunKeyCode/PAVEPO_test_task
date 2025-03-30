@@ -5,10 +5,6 @@ services:
   postgres:
     image: postgres:16
     container_name: postgres_16
-#    command:
-#      - "postgres"
-#      - "-c"
-#      - "config_file=/var/lib/postgresql/data/postgresql.conf"
     networks:
       - docker-network
     environment:
@@ -20,7 +16,6 @@ services:
       - "5432:5432"
     volumes:
       - ./postgres_db/:/var/lib/postgresql/data
-#      - ./postgresql.conf:/var/lib/postgresql/data/postgresql.conf
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}" ]
       interval: 5s
@@ -28,6 +23,22 @@ services:
       retries: 5
       start_period: 1s
     restart: unless-stopped
+
+  pavepo_app:
+    build:
+      context: .
+    environment:
+      DB_HOST: postgres
+    volumes:
+      - ./files/:/files
+      - ./.env:/.env
+    ports:
+      - "8000:8000"
+    networks:
+      - docker-network
+    depends_on:
+      postgres:
+        condition: service_healthy
 
 networks:
   docker-network:

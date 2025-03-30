@@ -18,6 +18,8 @@ services:
       PGDATA: "/var/lib/postgresql/data/pgdata"
     ports:
       - "5432:5432"
+    networks:
+      - docker-network
     volumes:
       - ./postgres_db/:/var/lib/postgresql/data
 #      - ./postgresql.conf:/var/lib/postgresql/data/postgresql.conf
@@ -28,6 +30,22 @@ services:
       retries: 5
       start_period: 1s
     restart: unless-stopped
+
+  pavepo_app:
+    build:
+      context: .
+    environment:
+      DB_HOST: postgres
+    volumes:
+      - ./files/:/files
+      - ./.env:/.env
+    ports:
+      - "8000:8000"
+    networks:
+      - docker-network
+    depends_on:
+      postgres:
+        condition: service_healthy
 
 networks:
   docker-network:

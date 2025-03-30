@@ -21,3 +21,8 @@ def generate_system_filename():
 def hash_password(password: str):
     hasher = CryptContext(schemes=["sha256_crypt"])
     return hasher.hash(password)
+
+
+def verify_password(hashed: str, password: str) -> str:
+    hasher = CryptContext(schemes=["sha256_crypt"])
+    return hasher.verify(password, hashed)

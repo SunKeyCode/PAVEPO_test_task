@@ -1,19 +1,20 @@
-import asyncio
-
 from sqlalchemy import select, update, delete
+from sqlalchemy.orm import joinedload
 
-from db.models import User, Password
+from db.models import User, Password, YandexAccount
 from db.repositories.base import BaseRepository
-from db.session import get_session
 from schemas.users import CreateUserSchema
 from utils import hash_password
 
 
 class UserRepository(BaseRepository):
     async def create(
-        self, user_data: CreateUserSchema, password: str | None = None
+        self,
+        user_data: CreateUserSchema,
+        password: str | None = None,
+        is_superuser: bool = False,
     ) -> User:
-        new_user = User(**user_data.dict())
+        new_user = User(**user_data.dict(), is_superuser=is_superuser)
         self.session.add(new_user)
         await self.session.flush()
         if password is not None:
@@ -36,8 +37,9 @@ class UserRepository(BaseRepository):
         stmt = update(User).where(User.id == user_id).values(values).returning(User)
         return await self.session.scalar(stmt)
 
-    async def get_by_login(self, login: str):
+    async def get_by_login(self, login: str) -> User:
         stmt = select(User).where(User.login == login)
+        stmt = stmt.options(joinedload(User.password))
         return await self.session.scalar(stmt)
 
     async def get_by_yandex_id(self, yandex_id: int):
@@ -45,17 +47,10 @@ class UserRepository(BaseRepository):
         return await self.session.scalar(stmt)
 
     async def delete(self, user_id: int):
-        return await self.session.execute(
-            delete(User).where(User.id == user_id).returning(User.id)
+        yandex_id = await self.session.scalar(
+            delete(User).where(User.id == user_id).returning(User.yandex_id)
         )
-
-
-async def get_user():
-    async with get_session() as session:
-        repo = UserRepository(session)
-        user = await repo.get_by_login("some_login")
-    return user
-
-
-if __name__ == "__main__":
-    user = asyncio.run(get_user())
+        await self.session.execute(
+            delete(YandexAccount).where(YandexAccount.id == yandex_id)
+        )
+        await self.session.commit()

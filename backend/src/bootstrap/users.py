@@ -21,6 +21,7 @@ async def create_superuser(session: AsyncSession):
             email=get_settings().SUPERUSER_EMAIL,
         ),
         password=settings.SUPERUSER_PASS,
+        is_superuser=True,
     )
 
     return user

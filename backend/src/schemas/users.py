@@ -5,7 +5,6 @@ class CreateUserSchema(BaseModel):
     login: str
     email: str
     name: str | None = None
-    is_superuser: bool = False
 
 
 class UpdateUserSchema(BaseModel):

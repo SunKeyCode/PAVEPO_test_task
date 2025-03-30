@@ -13,7 +13,8 @@ class FileModel(Base):
     user_filename: Mapped[str] = mapped_column(String)
     system_filename: Mapped[str] = mapped_column(String)
     user_id: Mapped[int] = mapped_column(
-        ForeignKey("users.id", name="file_storage_user_id_fk"), nullable=False
+        ForeignKey("users.id", name="file_storage_user_id_fk", ondelete="CASCADE"),
+        nullable=False,
     )
 
     user = relationship("User")

@@ -2,16 +2,9 @@ from fastapi import APIRouter, status
 
 from api.dependencies import UserRepo
 from auth.deps import UserDep, SuperuserDep
-from schemas.users import CreateUserSchema, UpdateUserSchema
+from schemas.users import UpdateUserSchema
 
 router = APIRouter(prefix="/users", tags=["Пользователи"])
-
-
-@router.post("/")
-async def crate_user(repo: UserRepo, user_data: CreateUserSchema):
-    # just for debug
-    created_user = await repo.create(user_data)
-    return created_user
 
 
 @router.get("/me")
@@ -26,7 +19,7 @@ async def get_users(_: SuperuserDep, repo: UserRepo):
 
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_user(_: SuperuserDep, user_id: int, repo: UserRepo):
-    return await repo.delete(user_id=user_id)
+    await repo.delete(user_id=user_id)
 
 
 @router.patch("/")

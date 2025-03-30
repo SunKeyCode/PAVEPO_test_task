@@ -21,12 +21,13 @@ class User(Base):
     name: Mapped[str] = mapped_column(String, nullable=True)
     is_superuser: Mapped[bool] = mapped_column(Boolean, default=False)
     yandex_id: Mapped[int] = mapped_column(
-        ForeignKey("yandex_account_table.id", ondelete="CASCADE"),
+        ForeignKey("yandex_account_table.id"),
         nullable=True,
         name="fk_user_yandex_account_table_id",
     )
 
     yandex_account = relationship(YandexAccount)
+    password: Mapped["Password"] = relationship("Password")
 
 
 class Password(Base):

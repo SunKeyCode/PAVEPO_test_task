@@ -1,4 +1,3 @@
-import asyncio
 from fastapi.exceptions import HTTPException
 
 from httpx import AsyncClient
@@ -6,10 +5,6 @@ from starlette import status
 
 from schemas.yandex_id import YandexIdInputSchema, YandexIdToken
 from settings.config import get_settings
-
-
-def get_yandex_id_access_token():
-    return "y0__xDJjs5hGOq_NiCZ38TVEhZ0o_mNE7fEULg7Revrui_VuQdI"
 
 
 async def get_yandex_id_access_token_with_auth_code(auth_code: str) -> YandexIdToken:

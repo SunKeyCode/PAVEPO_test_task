@@ -4,7 +4,7 @@ from pydantic import BaseModel
 class CreateUserSchema(BaseModel):
     login: str
     email: str
-    name: str | None
+    name: str | None = None
     is_superuser: bool = False
 
 

@@ -1,6 +1,6 @@
 from pathlib import Path
 from typing import Literal
-from pydantic import model_validator, PostgresDsn
+from pydantic import PostgresDsn
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -26,6 +26,10 @@ class AppSettings(PydanticBaseSettings):
 
     CLIENT_ID: str
     CLIENT_SECRET: str
+
+    SUPERUSER_LOGIN: str = "admin"
+    SUPERUSER_PASS: str = "admin"
+    SUPERUSER_EMAIL: str = "example@mail.com"
 
     @staticmethod
     def build_postgres_url(pg_driver: Literal["psycopg2", "asyncpg"], **values):

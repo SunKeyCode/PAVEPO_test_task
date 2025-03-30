@@ -2,16 +2,25 @@ import asyncio
 
 from sqlalchemy import select, update, delete
 
-from db.models import User
+from db.models import User, Password
 from db.repositories.base import BaseRepository
 from db.session import get_session
 from schemas.users import CreateUserSchema
+from utils import hash_password
 
 
 class UserRepository(BaseRepository):
-    async def create(self, user_data: CreateUserSchema) -> User:
+    async def create(
+        self, user_data: CreateUserSchema, password: str | None = None
+    ) -> User:
         new_user = User(**user_data.dict())
         self.session.add(new_user)
+        await self.session.flush()
+        if password is not None:
+            password_model = Password(
+                user_id=new_user.id, password=hash_password(password)
+            )
+            self.session.add(password_model)
         await self.session.commit()
         return new_user
 

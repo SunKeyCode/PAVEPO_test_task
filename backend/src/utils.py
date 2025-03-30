@@ -1,10 +1,9 @@
 import pathlib
 import uuid
 import aiofiles
-from fastapi import UploadFile
+from passlib.context import CryptContext
 
 from constants import FILES_DIR
-from schemas.files import CreateFileSchema
 
 
 async def save_file_to_filesystem(file_obj: bytes, system_filename: str):
@@ -17,3 +16,8 @@ async def save_file_to_filesystem(file_obj: bytes, system_filename: str):
 
 def generate_system_filename():
     return str(uuid.uuid4())
+
+
+def hash_password(password: str):
+    hasher = CryptContext(schemes=["sha256_crypt"])
+    return hasher.hash(password)

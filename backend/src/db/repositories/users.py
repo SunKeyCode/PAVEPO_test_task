@@ -17,7 +17,7 @@ class UserRepository(BaseRepository):
 
     async def get(self, user_id: int) -> User:
         stmt = select(User).where(User.id == user_id)
-        return self.session.scalar(stmt)
+        return await self.session.scalar(stmt)
 
     async def get_list(self):
         scalar_result = await self.session.scalars(select(User))

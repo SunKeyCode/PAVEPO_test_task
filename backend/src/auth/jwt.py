@@ -5,11 +5,11 @@ from datetime import datetime, timedelta, UTC
 from settings.config import get_settings
 
 
-def encode_token(login: str) -> str:
+def encode_token(user_id: str) -> str:
     settings = get_settings()
     crated_at = datetime.now(UTC)
     payload = {
-        "sub": login,
+        "sub": user_id,
         "exp": crated_at + timedelta(minutes=int(settings.ACCESS_TOKEN_EXPIRE_MINUTES)),
         "iat": crated_at,
     }

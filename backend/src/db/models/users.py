@@ -18,6 +18,7 @@ class User(Base):
     )
     login: Mapped[str] = mapped_column(String, nullable=False, unique=True)
     email: Mapped[str] = mapped_column(String)
+    name: Mapped[str] = mapped_column(String, nullable=True)
     is_superuser: Mapped[bool] = mapped_column(Boolean, default=False)
     yandex_id: Mapped[int] = mapped_column(
         ForeignKey("yandex_account_table.id"),

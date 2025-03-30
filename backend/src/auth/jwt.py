@@ -26,3 +26,9 @@ def decode_token(token: str) -> str:
     )
 
     return payload["sub"]
+
+
+def refresh_access_token(token: str) -> str:
+    user_id = decode_token(token)
+    new_token = encode_token(user_id=user_id)
+    return new_token

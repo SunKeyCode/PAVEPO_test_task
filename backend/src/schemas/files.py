@@ -1,7 +1,9 @@
 import uuid
 from functools import cached_property
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
+
+from constants import FILES_DIR
 
 
 class CreateFileSchema(BaseModel):
@@ -14,4 +16,10 @@ class CreateFileSchema(BaseModel):
 
 class ResponseFileSchema(BaseModel):
     id: int
-    filename: str
+    filename: str = Field(validation_alias="user_filename")
+    path: str = Field(validation_alias="system_filename")
+
+    @field_validator("path")
+    @classmethod
+    def validate_path(cls, value):
+        return FILES_DIR / value

@@ -38,3 +38,5 @@ async def get_superuser(user: User = Depends(get_auth_user)):
 
 
 UserDep = Annotated[User, Depends(get_auth_user)]
+
+SuperuserDep = Annotated[User, Depends(get_superuser)]

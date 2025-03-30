@@ -9,3 +9,6 @@ https://oauth.yandex.ru/verification_code
 
 отладочный токен
 y0__xDJjs5hGOq_NiCZ38TVEhZ0o_mNE7fEULg7Revrui_VuQdI
+
+
+https://oauth.yandex.ru/authorize?response_type=code&client_id=be8aa7e968274e1fa388c2e2235b44c4

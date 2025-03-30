@@ -1,6 +1,6 @@
 import asyncio
 
-from sqlalchemy import select, update
+from sqlalchemy import select, update, delete
 
 from db.models import User
 from db.repositories.base import BaseRepository
@@ -34,6 +34,11 @@ class UserRepository(BaseRepository):
     async def get_by_yandex_id(self, yandex_id: int):
         stmt = select(User).where(User.yandex_id == yandex_id)
         return await self.session.scalar(stmt)
+
+    async def delete(self, user_id: int):
+        return await self.session.execute(
+            delete(User).where(User.id == user_id).returning(User.id)
+        )
 
 
 async def get_user():

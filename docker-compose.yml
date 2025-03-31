@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+
+  postgres:
+    image: postgres:16
+    container_name: postgres_16
+    networks:
+      - docker-network
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${DB_NAME}
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    ports:
+      - "5432:5432"
+    networks:
+      - docker-network
+    volumes:
+      - ./postgres_db/:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 1s
+    restart: unless-stopped
+
+  pavepo_app:
+    build:
+      context: .
+    environment:
+      DB_HOST: postgres
+    volumes:
+      - ./files/:/files
+      - ./.env:/.env
+    ports:
+      - "8000:8000"
+    networks:
+      - docker-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+networks:
+  docker-network:
+    driver: bridge

@@ -8,6 +8,13 @@ from settings.config import get_settings
 
 
 async def get_yandex_id_access_token_with_auth_code(auth_code: str) -> YandexIdToken:
+    """
+    Получить токен аутентификации Yandex ID по коду подтверждения, полученному из
+    https://oauth.yandex.ru/authorize?response_type=code&client_id=<client_id>
+
+    :param auth_code: код подтверждения
+    :return: объект токена
+    """
     settings = get_settings()
     url = "https://oauth.yandex.ru/token"
     boby = {
@@ -24,6 +31,12 @@ async def get_yandex_id_access_token_with_auth_code(auth_code: str) -> YandexIdT
 
 
 async def request_user_data_from_yandex_id_by_token(token: str) -> YandexIdInputSchema:
+    """
+    Запросить данные пользователя аккаунта Yandex по токену аутентификации.
+
+    :param token: токен аутентификации
+    :return: данные пользователя в виде схемы YandexIdInputSchema
+    """
     url = "https://login.yandex.ru/info"
     params = {
         "oauth_token": token,
@@ -37,6 +50,13 @@ async def request_user_data_from_yandex_id_by_token(token: str) -> YandexIdInput
 
 
 async def request_yandex_account_data(code: str) -> YandexIdInputSchema:
+    """
+    Запрашивает данные аккаунта Yandex по коду подтверждения.
+
+    :param code: код подтверждения
+    :return:
+    """
+
     token = await get_yandex_id_access_token_with_auth_code(auth_code=code)
     user_data = await request_user_data_from_yandex_id_by_token(
         token=token.access_token

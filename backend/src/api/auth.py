@@ -19,10 +19,7 @@ async def get_yandex_auth_data(code: str, session: SessionDep):
     """
     Авторизация через Яндекс ID, с помощью кода подтверждения.
 
-
-    :param session: сессия для работы с БД
-    :param code: код подтверждения полученный пользователем
-    :return:
+    **code**: код подтверждения полученный пользователем.
     """
     account_schema = await request_yandex_account_data(code=code)
     repo = YandexAccountRepository(session)
@@ -45,11 +42,14 @@ async def get_yandex_auth_data(code: str, session: SessionDep):
 async def refresh_token(
     _: UserDep, token=Depends(get_access_token)
 ) -> AccessTokenSchema:
+    """Обновить внутренний токен для запросов к API."""
     return AccessTokenSchema(token=refresh_access_token(token))
 
 
 @router.post("/login")
 async def login(creds: UserCreds, repo: UserRepo) -> AccessTokenSchema:
+    """Вход пользователя в систему, нужен для входя суперпользователя."""
+
     user = await repo.get_by_login(creds.login)
     if user is None:
         raise HTTPException(

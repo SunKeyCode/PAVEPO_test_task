@@ -10,3 +10,7 @@ class CreateUserSchema(BaseModel):
 class UpdateUserSchema(BaseModel):
     email: str | None = None
     name: str | None = None
+
+
+class ResponseUserSchema(CreateUserSchema):
+    id: int

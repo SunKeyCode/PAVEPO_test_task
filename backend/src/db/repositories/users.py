@@ -35,7 +35,9 @@ class UserRepository(BaseRepository):
 
     async def update(self, user_id: int, **values) -> User:
         stmt = update(User).where(User.id == user_id).values(values).returning(User)
-        return await self.session.scalar(stmt)
+        updated_user = await self.session.scalar(stmt)
+        await self.session.commit()
+        return updated_user
 
     async def get_by_login(self, login: str) -> User:
         stmt = select(User).where(User.login == login)
